@@ -1,0 +1,266 @@
+<script>
+  var tt_cancel_destination = "/patients/treatment_dashboard/<%= @patient.patient_id %>"
+</script>
+
+<style>
+
+  #treatmentcard-container {
+    display: table;
+    width: 994px;
+    font-size: 13px;
+  }
+  .main-row  {
+    display: table-row;
+  }
+  .row-container {
+    display: table;
+  }
+  .smaller-row  {
+    display: table-row;
+  }
+  .bordered-row  {
+    display: table-row;
+  }
+  .left, .right, .middle {
+    display: table-cell;
+  }
+  .demographics-headers-cell{
+    display: table-cell;
+    width: 115px;
+    padding: 3px;
+  }
+  .demographics-cell{
+    display: table-cell;
+    border: 1px solid;
+    width: 570px;
+  }
+  .registration-cell{
+    border:1px solid;
+    width: 160px;
+    display: inline-block;
+  }
+  .registration-headers{
+    width: 90px;
+    display: inline-block;
+  }
+  .circle{
+    border-radius:50px 50px 50px 50px;
+    background:none repeat scroll 0 0 #fff;
+    border: 1px solid;
+    text-align:center;
+    width:38px;
+    display: inline-block;
+    float: left;
+    margin-top: 3px;
+  }
+  .non-circle{
+    text-align:center;
+    margin-top: 6px;
+    width:38px;
+    display: inline-block;
+  }
+
+</style>
+<div id="treatmentcard-container">
+  <div class="smaller-row">
+
+        <span style="display:inline-block;width:250px;text-align:center;">NATION TUBERCULOSIS PROGRAMME MALAWI</span>
+        <span style="display:inline-block;width:50px;">&nbsp;</span>
+        <span style="display:inline-block;width:360px;border: 1px solid;font-size:20px;text-align:center;"> TUBERCULOSIS TREATMENT CARD </span><br />
+  </div>
+
+  <div class="main-row" id="tb-card-demographics">
+    <div class="row-container">
+      
+      
+      <div class="smaller-row">
+        <div class"left">
+             <div class="row-container">
+            <div class="smaller-row">
+              &nbsp;
+            </div>
+            <div class="smaller-row">
+              <div class="demographics-headers-cell">
+                Name:
+              </div>
+            </div>
+            <div class="smaller-row">
+              <div class="demographics-headers-cell">
+                Address: (in full)
+              </div>
+            </div>
+            <div class="smaller-row">
+              <div class="demographics-headers-cell">
+                Name and address of Guardians
+              </div>
+            </div><br />
+            <div class="smaller-row">
+              <div class="demographics-headers-cell" style="height:40px">
+                Sex:
+              </div>
+            </div><br />
+            <div class="smaller-row">
+              <div class="demographics-headers-cell">
+                Disease Class. & Patient Category
+              </div>
+            </div><br />
+          </div>
+        </div>
+        <div class="middle">
+          <div class="row-container">
+            <div class="smaller-row">
+              &nbsp;
+            </div>
+            <div class="smaller-row">
+              <div class="demographics-cell">
+                <%= @patient.name rescue "Could not display name" %>
+              </div>
+            </div>
+            <div class="smaller-row">
+              <div class="demographics-cell" style="border-top:0px solid;">
+                <%= @patient.person.addresses.first.city_village %>
+              </div>
+            </div>
+            <div class="smaller-row">
+              <div class="demographics-cell" style="border-top:0px solid;">
+                &nbsp;
+              </div>
+            </div>
+            <div class="smaller-row">
+              <div class="demographics-cell" style="border-top:0px solid;">
+                &nbsp;
+              </div>
+            </div><br />
+            <div class="smaller-row">
+              <div class="row-container">
+                <div class="smaller-row">
+                  <div class="left" style="border: 1px solid;width:90px;height:40px;">
+                    <%if @patient.gender == 'Male'%>
+                      <span class="circle">M</span><span class="non-circle">F</span>
+                    <%else%>
+                      <span class="circle">F</span><span class="non-circle">M</span>
+                    <%end%>
+                  </div>
+                  <div class="left" style="width:20px;">
+                    &nbsp;
+                  </div>
+                  <div class="left" style="width:40px;">
+                    Age:
+                  </div>
+                  <div class="left" style="border: 1px solid;width:90px;">
+                    <%= @patient.age%>
+                  </div>
+                </div>
+              </div>
+            </div><br />
+            <div class="smaller-row">
+              <div class="row-container">
+                <div class="smaller-row">
+                  <div class="left" style="border: 1px solid;width:90px;height:40px;">
+                    <span class="non-circle">P</span><span class="non-circle">EP</span>
+                  </div>  
+                  <div class="left" style="width:20px;">
+                    &nbsp;
+                  </div>  
+                  <div class="left" style="border: 1px solid;width:210px;height:40px;">
+                    <span class="non-circle">New</span><span class="non-circle">Relap</span>
+                    <span class="non-circle">RAD</span><span class="non-circle">Fail</span>
+                    <span class="non-circle">Oth</span>
+                  </div>  
+                  <div class="left" style="width:20px;">
+                    &nbsp;
+                  </div>
+                  <div class="left" style="width:50px;font-size:13px">
+                    Specify Other:
+                  </div>
+                  <div class="left" style="border: 1px solid;width:150px;">
+                    <!--Other goes here-->
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="smaller-row" style="font-size:10px">
+                  <span><b>P</b> = Pulmonary TB <b>EP</b> = Extra-pulmonary TB</span><br />
+                  <span><b>NEW</b> = New case <b>Relap</b>=Relapse <b>RAD</b> = Retreatment after default <b>Fail</b>=Treatment failure <b>Oth</b>=Other previously treated</span>
+                </div>
+          </div>
+        </div>
+        <div class="right" style="width:25px">
+        </div>
+        <div class="right" id="right-column">
+          <div class="row-container">
+            <div class="smaller-row">
+              <div class="left">
+                <span class="registration-headers">District TB No</span>
+                <span class="registration-cell" >&nbsp;</span>
+              </div>
+            </div>
+            <div class="smaller-row">
+              <div class="left">
+                <span class="registration-headers">Health Unit</span>
+                <span class="registration-cell" style="border-top:0px solid;border-bottom:0px solid">&nbsp;</span>
+              </div>
+            </div>
+            <div class="smaller-row">
+              <div class="left">
+                <span class="registration-headers">Registr. Date</span>
+                <span class="registration-cell">&nbsp;</span>
+              </div>
+            </div><br />
+            <div class="smaller-row">
+              <div class="row-container" style="border: 1px solid;width:290px">
+                <div class="smaller-row">
+                  <div class="left">
+                    Management of HIV+ Patients
+                  </div>
+                </div>
+                <div class="small-row">
+                  <div class="left">
+                    <span style="display:inline-block;width:80px"></span><span style="display:inline-block;width:90px;text-align:center">ARV</span><span style="display:inline-block;width:90px;text-align:center">CPT</span>
+                  </div>
+                </div>
+                <div class="small-row">
+                  <div class="left">
+                    <span style="display:inline-block;width:80px">Start Date:</span><span style="display:inline-block;width:90px;border: 1px solid">&nbsp;</span><span style="display:inline-block;width:90px;border: 1px solid">&nbsp;</span>
+                  </div>
+                </div>
+                <div class="small-row">
+                  <div class="left">
+                    <span style="display:inline-block;width:80px">Arv No:</span><span style="display:inline-block;width:90px;border-right:1px solid;border-left:1px solid;border-bottom:0px solid"">&nbsp;</span>
+                  </div>
+                </div>
+                <div class="small-row">
+                  <div class="left">
+                    <span style="display:inline-block;width:80px">ARV Status:</span><span style="display:inline-block;width:90px;border: 1px solid">&nbsp;</span>
+                  </div>
+                </div>
+                <div class="small-row">
+                  <div class="left" style="font-size:10px">
+                    <span><b>Update ARV-Status in Register from this cards:</b></span><br />
+                    <span><b>A:</b> started ARV <u>before</u> starting TB treatment</span><br />
+                    <span><b>B:</b> started ARV <u>while on</u> TB treatment </span><br />
+                    <span><b>C:</b> ARV <u>not</u> started by the time when discharged from TB treat.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr /><!-- ____________________________________________________________   -->
+  <div class="main-row" id="tb-card-initial-phase">
+    <div class="row-container">
+      <span style="width:280px;font-size:18px;display:inline-block"> 1. INITIAL INTENSIVE PHASE </span><div style="display:inline-block;width:710px;border:1px solid;border-bottom: 0px solid"> <span style="line-height:50px;display:inline-block;width: 40px;border-right: 1px solid">Time</span><span style="display:inline-block;width: 340px;border-right: 1px solid;text-align: center">Sputum Results</span><span style="display:inline-block;width: 50px;border-right: 1px solid">Weight<br/>(kg)</span><span style="display:inline-block;">Documented HIV Test History (See back)</span></div> <br />
+      <span style="width:280px;display:inline-block">&nbsp;</span><span style="display:inline-block;width:710px;border:1px solid;border-top:0px solid;border-bottom: 0px solid"> <span style="display:inline-block;width: 40px;border-right: 1px solid">&nbsp;</span><span style="display:inline-block;width: 82px;border-right: 1px solid">Test</span><span style="display:inline-block;width: 82px;border-right: 1px solid">Date</span><span style="display:inline-block;width: 82px;border-right: 1px solid">Serial No</span><span style="display:inline-block;width: 82px;border-right: 1px solid">Result</span></span> <br />
+      <span style="width:280px;display:inline-block">Regimen and daily dosage of tablets / grams of S</span><span style="display:inline-block;width:710px;border:1px solid"> <span style="line-height:50px;">Initiation</span></span>
+    </div>
+  </div>
+  <div class="main-row" id="tb-card-cotinuation-phase">
+    <div class="row-container">
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,143 @@
+<html>
+  <head>
+    <title>Patient Dashboard</title>
+    <script type="text/javascript" language="javascript"
+    src="/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer  ></script>
+    <meta http-equiv='content-type' content='text/html;charset=UTF-8' />
+    <script language="javascript">
+      tstUsername = "";
+      tstCurrentDate = "<%= @date %>";
+      //tt_cancel_destination = '/clinic';
+      tt_cancel_show = '/clinic';
+    </script>
+    <style>
+      #tab5 {
+        background-color: white;
+        border: 0 none;
+        color: black;
+        font-weight: bold;
+      }
+    </style>
+    <script>
+        function toggle() {
+            z_index_buffer = document.getElementById('photo').style.zIndex;
+            document.getElementById('photo').style.zIndex = document.getElementById('app_name').style.zIndex;
+            document.getElementById('app_name').style.zIndex = z_index_buffer;
+            
+            if (document.getElementById('photo').style.zIndex > document.getElementById('app_name').style.zIndex){
+                document.getElementById('photo').style.display='block';
+                document.getElementById('app_name').style.display='none';
+            }else{
+                document.getElementById('app_name').style.display='block';
+                document.getElementById('photo').style.display='none';
+            }            
+        }
+    </script>
+  </head>
+  <body><div id='content'>
+      <div id='description' style='color:#777;position:absolute;margin-top:-70px;'></div><center>
+        <form id = 'dashboard' action='/clinic'>
+          <table cellpadding=10>
+            <tr>
+              <th colspan=2>Patient Dashboard</th>
+            </tr>
+            <h1 id='project_name'>
+              <%if User.current_user.activities.include?('Manage Lab Orders') or User.current_user.activities.include?('Manage Lab Results') or
+       User.current_user.activities.include?('Manage Sputum Submissions') or User.current_user.activities.include?('Manage TB Clinic Visits') or
+       User.current_user.activities.include?('Manage TB Reception Visits') or User.current_user.activities.include?('Manage TB Registration Visits') or
+       User.current_user.activities.include?('Manage HIV Status Visits') %>
+               <div id="photo" style="position: absolute; top:6;z-index:100; max-width:300px; max-height:224px; border-radius:15px;">
+               <img id = 'photo_img' src="/uploads/<%=@patient.id%>.jpg" style="position:relative; left:-11px; width:100%; height:100%; border-radius:15px;" /> 
+               </div>
+                 <span id = "app_name" style="z-index:10; font-size: 55px;">TB-ART</span>
+               <%else%>
+               <!--div id="photo_button" style="position: absolute; display:none; top:6;z-index:500; width:30px; height:30px; background-color:blue; border-radius: 0.1em;"
+                    onclick="toggle();"; ></div -->
+               <div id="photo" style="position: absolute; display:block; top:6;z-index:100; width:300px; height:224px;border-radius:15px;">
+               <img id = 'photo_img' src="/uploads/<%=@patient.id%>.jpg" style="position:relative; left:-11px; width:100%; height:100%; border-radius:15px;" /> 
+              </div>
+                 <span id = "app_name" style="z-index:10; ">BART</span>
+               <%end%>
+            </h1>
+            <span id='patient_name'><%= @patient.name rescue "" %></span>
+            <span id='patient_id'><%= @patient.national_id_with_dashes rescue "" %></span>
+            <span id='patient_residence'><%= @patient.person.addresses.last.city_village rescue "" %></span>
+            <span id='patient_age'><%= @patient.person.age rescue "" %></span>
+            <span id='patient_gender'><%= @patient.gender rescue "" %></span>
+
+            <div id="patient_card">
+              <% if (@patient.reason_for_art_eligibility rescue nil) != nil && (@patient.reason_for_art_eligibility) != "" %>
+                <span value="<%= @patient.reason_for_art_eligibility rescue "" %>">Reason for Starting</span>
+              <% end %>
+              <% if (@patient.hiv_status rescue nil) != nil && (@patient.hiv_status) != "" %>
+                <span value="<%= @patient.hiv_status rescue "" %>">HIV Status</span>
+              <% end %>
+              <% if (@patient.arv_number rescue nil) != nil && (@patient.arv_number) != " " %>
+                <span value="<%= @patient.arv_number rescue "" %>">ARV Number</span>
+              <% end %>
+              <% if (@patient.eid_number rescue nil) != nil && (@patient.eid_number) != " " %>
+                <span value="<%= @patient.eid_number rescue "" %>">EID Number</span>
+              <% end %>
+              <% if (@patient.filing_number rescue nil) != nil && (@patient.filing_number) != " " %>
+                <span value="<%= @patient.filing_number rescue "" %>">Filing Number</span>
+              <% end %>
+              <% if (@patient.pre_art_number rescue nil) != nil && (@patient.pre_art_number) != " " %>
+                <span value="<%= @patient.pre_art_number rescue "" %>">Pre-ART Number</span>
+              <% end 
+                 session_date = session[:datetime].to_date rescue Date.today
+                 task = Task.next_task(Location.current_location,@patient,session_date)
+                 task_name = (task.encounter_type || 'NONE').upcase rescue 'NONE'
+              %>
+            </div>
+            <select id="tabs">
+              <option value='/patients/overview?patient_id=<%= @patient.id %>'>Overview</option>
+              <option value='/patients/visit_history?patient_id=<%= @patient.id %>'>Current Visit</option>
+              <option value='/patients/past_visits_summary?patient_id=<%= @patient.id %>'>Past Visits</option>
+              <option value='/patients/personal/<%= @patient.id -%>'>Printouts/Other</option>
+              <option value='/patients/next_task_description?task_id=<%= task.id -%>'>
+                NEXT TASK: <%= task_name.gsub('_',' ') %>
+              </option>
+            </select>
+            <% if @patient.person.dead == 1%>
+              <select id="links">
+                <option value='/patients/programs_dashboard/<%= @patient.id -%>'>Outcomes</option>
+                <option value='/photos/new/<%= @patient.id -%>'>Capture Image</option>
+              </select>
+              <select id="navigation_links">
+                <option link="/patients/mastercard_menu?patient_id=<%= @patient.id -%>&source=<%= @source -%>">Mastercard</option>
+                <option link='<%= ((session[:datetime].to_date rescue '') != '' ?
+                            "/people/reset_datetime/#{@patient.id}" : "/people/set_datetime/#{@patient.id}") %>'  ttSize="160px">
+                  <%= ((session[:datetime].to_date rescue '') != '' ? "Reset Date" : "Set Date") %></option>
+                </select>
+             <% else %>
+                <select id="links">
+                  <option value='/patients/treatment_dashboard/<%= @patient.id -%>'>Treatment</option>
+                  <option value='/patients/guardians_dashboard/<%= @patient.id -%>'>Guardians</option>
+                  <!--%if User.current_user.activities.include?('Manage Patient Programs')%-->
+                    <option value='/patients/programs_dashboard/<%= @patient.id -%>'>Outcomes</option>
+                  <!--%end%-->
+                  <option value='/patients/show/<%= @patient.id -%>?source=opd'>OPD</option>
+                </select>
+                <select id="navigation_links">
+                    <option link="/encounter_types?patient_id=<%= @patient.id -%>" ttSize = "160px">Tasks</option>
+                  <option link="/patients/mastercard_menu?patient_id=<%= @patient.id -%>&source=<%= @source -%>">Mastercard</option>
+                  <% if show_lab_results %>
+                    <option link="/lab/results/<%=@patient.id -%>">Lab results</option>
+                  <%end%>
+                    <option link='<%= ((session[:datetime].to_date rescue '') != '' ?
+                          "/people/reset_datetime/#{@patient.id}" : "/people/set_datetime/#{@patient.id}") %>'  ttSize="160px">
+                     <%= ((session[:datetime].to_date rescue '') != '' ? "Reset Date" : "Set Date") %></option>
+                   <option link='/photos/new/<%= @patient.id -%>'>Capture Image</option>
+                </select>
+             <% end %>
+            <tr>
+              <td align='center'>
+                <input type='submit' value='Finish' />
+              </td>
+            </tr>
+          </table>
+        </form>
+      </center>
+    </div>
+  </body>
+</html>
